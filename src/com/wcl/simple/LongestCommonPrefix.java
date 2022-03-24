@@ -30,8 +30,8 @@ import java.util.*;
 public class LongestCommonPrefix {
     public static void main(String[] args) {
 
-        String[] strs = new String[]{"", ""};
-        System.out.println(solution1(strs));
+        String[] strs = new String[]{"123", "124", "125"};
+        System.out.println(solution3(strs));
     }
 
     /*
@@ -69,9 +69,64 @@ public class LongestCommonPrefix {
         比较相同列上的字符是否相同，如果相同则继续对下一列进行比较，如果不相同则当前列不再属于公共前缀，当前列之前的部分为最长公共前缀。
      */
     public static String solution2(String[] strs) {
-
+        //基本边界判断
+        if (strs == null || strs.length == 0) {
+            return "";
+        }
+        int length = strs[0].length();
+        int count = strs.length;
+        for (int i = 0; i < length; i++) {
+            //取第一个数的每一个数去别的数进行匹配
+            char c = strs[0].charAt(i);
+            for (int j = 1; j < count; j++) {
+                //排除符合条件的，i循环结束或者当不匹配的时候结束循环，截取字符串
+                if (i == strs[j].length() || strs[j].charAt(i) != c) {
+                    return strs[0].substring(0, i);
+                }
+            }
+        }
+        return strs[0];
     }
 
+    /*
+    分治
+    将问题拆解进行解决，分组解决
+
+     */
+    public static String solution3(String[] strs) {
+        if (strs == null || strs.length == 0) {
+            return "";
+        } else {
+            return solution3Group(strs,0, strs.length-1);
+        }
+    }
+
+    //将数组分组
+    public static String solution3Group(String[] strs, int start, int end) {
+        //判断是否只有一个元素
+        if (start == end) {
+            return strs[start];
+        }
+        //取中值，进行分组
+        int mid = (end-start) / 2+start;
+        //调用自己
+        String left = solution3Group(strs, start, mid);
+        String right = solution3Group(strs, mid+1, end);
+        return solution3Get(left,right);
+    }
+
+    //将数组进行求共前缀
+    //该方法思想与longestCommonPrefix相同，都是求前缀值，
+    public static String solution3Get(String l, String r) {
+        int length = Math.min(l.length(), r.length());
+        for (int i = 0; i < length; i++) {
+            //当不相同位置不相同，返回
+            if (l.charAt(i)!=r.charAt(i)){
+                return l.substring(0,i);
+            }
+        }
+        return l.substring(0, length);
+    }
 //    当输入空串时，有问腿
 
     public static String solution(String[] strs) {
