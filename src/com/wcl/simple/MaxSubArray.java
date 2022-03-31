@@ -23,32 +23,65 @@ import java.util.Collections;
 public class MaxSubArray {
     public static void main(String[] args) {
         int[] nums = new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4};
-        System.out.println(solution3(nums));
+        System.out.println(solution2(nums));
 
     }
 
     /*
+    贪心算法
+    当前和大于0，就保留，否则就舍去
+    实现方式则比较，当前索引位置，加上之前的和
+    之后对上一个和和现在和进行比较，返回大的
+     */
+    public static int solution1(int[] nums) {
+        int n = nums.length;
+
+        int maxSum = nums[0], sum = nums[0];
+
+        for (int i = 1; i < n; i++) {
+            //比较当前值,和加之后的值
+            sum = Math.max(nums[i], sum + nums[i]);
+            //比较之前和和当前和
+            maxSum = Math.max(sum, maxSum);
+        }
+        return maxSum;
+    }
+
+    /*
     动态规划
+    思想：当前一个元素大于0的时候，就＋，否则就跳过
 
      */
     public static int solution2(int[] nums) {
-        int pre = 0, maxAns = nums[0];
-        for (int x : nums) {
-            pre = Math.max(pre + x, x);
-            maxAns = Math.max(maxAns, pre);
+        int n = nums.length;
+        for (int i = 1; i < n; i++) {
+//            如果数组的前一个值大于0
+            if (nums[i - 1] > 0) {
+//                那么数组的下个值就等于当前值加上前一个值，覆盖数组
+                nums[i] += nums[i - 1];
+            }
+
         }
-        return maxAns;
+        return maxNums(nums);
+    }
+    public static int maxNums(int[] nums){
+        int max=nums[0];
+        for (int x:
+             nums) {
+             max = Math.max(max, x);
+        }
+        return max;
     }
 
     /*
     分治
     https://leetcode-cn.com/problems/maximum-subarray/solution/zui-da-zi-xu-he-by-leetcode-solution/
      */
-    public static int solution1(int[] nums) {
+    public static int solution5(int[] nums) {
         return getInfo(nums, 0, nums.length - 1).mSum;
     }
 
-   static class Status {
+    static class Status {
         public int lSum, rSum, mSum, iSum;
 
         public Status(int lSum, int rSum, int mSum, int iSum) {
